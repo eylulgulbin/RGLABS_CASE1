@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Team Join Requests - {{ team.team_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1000px; margin: 2rem auto; padding: 0 2rem;">
+    <div class="card">
+        <h1 style="margin-bottom: 0.5rem;">Join Requests for {{ team.team_name }}</h1>
+        <p style="color: #666; margin-bottom: 2rem;">Hackathon: {{ team.hackathon_title }}</p>
+
+        {% if requests %}
+            <div style="display: grid; gap: 1.5rem;">
+                {% for request in requests %}
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 12px; border-left: 4px solid #667eea;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; gap: 2rem;">
+                        <div style="flex: 1;">
+                            <h3 style="margin-bottom: 0.5rem; color: #2d3748;">{{ request.full_name }}</h3>
+                            <p style="color: #666; margin-bottom: 0.3rem;">
+                                <strong>Email:</strong> {{ request.email }}
+                            </p>
+                            {% if request.github_username %}
+                            <p style="color: #666; margin-bottom: 0.3rem;">
+                                <strong>GitHub:</strong>
+                                <a href="https://github.com/{{ request.github_username }}" target="_blank" style="color: #667eea;">
+                                    @{{ request.github_username }}
+                                </a>
+                            </p>
+                            {% endif %}
+                            {% if request.bio %}
+                            <p style="color: #666; margin-top: 0.8rem;">
+                                <strong>Bio:</strong> {{ request.bio }}
+                            </p>
+                            {% endif %}
+                            <p style="color: #999; font-size: 0.9rem; margin-top: 0.8rem;">
+                                Requested: {{ request.joined_at }}
+                            </p>
+                        </div>
+
+                        <div style="display: flex; gap: 0.5rem; flex-shrink: 0;">
+                            <form method="POST" action="{{ url_for('approve_team_request', request_id=request.id) }}" style="display: inline;">
+                                <button type="submit" class="btn btn-success" style="background: #48bb78; color: white;">
+                                    ✓ Approve
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('reject_team_request', request_id=request.id) }}" style="display: inline;">
+                                <button type="submit" class="btn btn-danger" style="background: #f56565; color: white;">
+                                    ✗ Reject
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 3rem; background: #f8f9fa; border-radius: 12px;">
+                <p style="color: #666; font-size: 1.1rem;">No pending join requests</p>
+                <p style="color: #999; margin-top: 0.5rem;">Participants can send join requests from the hackathon page</p>
+            </div>
+        {% endif %}
+
+        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+            <a href="{{ url_for('team_detail', id=team.id) }}" class="btn btn-secondary">
+                ← Back to Team
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

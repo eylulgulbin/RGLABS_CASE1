@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Team - {{ team.team_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 2rem auto; padding: 0 2rem;">
+    <div class="card">
+        <h1 style="margin-bottom: 1.5rem;">Edit Team Information</h1>
+        <p style="color: #666; margin-bottom: 2rem;">
+            <strong>Hackathon:</strong> {{ team.hackathon_title }}
+        </p>
+
+        <form method="POST">
+            <div style="margin-bottom: 1.5rem;">
+                <label for="team_name" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">
+                    Team Name *
+                </label>
+                <input
+                    type="text"
+                    id="team_name"
+                    name="team_name"
+                    value="{{ team.team_name }}"
+                    required
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e0; border-radius: 8px; font-size: 1rem;"
+                >
+            </div>
+
+            <div style="margin-bottom: 1.5rem;">
+                <label for="description" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748;">
+                    Team Description
+                </label>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="5"
+                    placeholder="Tell others about your team, your goals, and what you're looking for in teammates..."
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e0; border-radius: 8px; font-size: 1rem; resize: vertical;"
+                >{{ team.description or '' }}</textarea>
+                <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
+                    A good description helps participants decide if they want to join your team.
+                </p>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+                <button type="submit" class="btn btn-primary">
+                    💾 Save Changes
+                </button>
+                <a href="{{ url_for('team_detail', id=team.id) }}" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="card" style="background: #f7fafc; margin-top: 1.5rem;">
+        <h3 style="color: #2d3748; margin-bottom: 0.5rem;">ℹ️ Tips for Team Information</h3>
+        <ul style="color: #4a5568; line-height: 1.8; padding-left: 1.5rem;">
+            <li><strong>Team Name:</strong> Choose a unique, memorable name that reflects your project or team spirit</li>
+            <li><strong>Description:</strong> Include your team's focus area, required skills, or what makes your team unique</li>
+            <li>Changes will be visible to all participants browsing the hackathon</li>
+            <li>Team name must be unique within the hackathon</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

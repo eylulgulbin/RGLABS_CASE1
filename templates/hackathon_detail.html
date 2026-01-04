@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}{{ hackathon.title }} - Hackathon Platform{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: start;">
+        <div>
+            <h1>{{ hackathon.title }}</h1>
+            <p style="color: #4a5568; margin: 0.5rem 0;">
+                <strong>Organized by:</strong> {{ hackathon.organizer_name }}
+            </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+            {% if session.user_id == hackathon.organizer_id %}
+                <a href="{{ url_for('edit_hackathon', hackathon_id=hackathon.id) }}" class="btn btn-secondary">
+                    ✏️ Edit Hackathon
+                </a>
+            {% endif %}
+            {% if hackathon.status == 'draft' %}
+                <span class="badge badge-secondary" style="font-size: 1rem; padding: 0.5rem 1rem;">Draft</span>
+            {% elif hackathon.status == 'open_registration' %}
+                <span class="badge badge-success" style="font-size: 1rem; padding: 0.5rem 1rem;">Registration Open</span>
+            {% elif hackathon.status == 'ongoing' %}
+                <span class="badge badge-info" style="font-size: 1rem; padding: 0.5rem 1rem;">Ongoing</span>
+            {% elif hackathon.status == 'judging' %}
+                <span class="badge badge-warning" style="font-size: 1rem; padding: 0.5rem 1rem;">Judging</span>
+            {% elif hackathon.status == 'completed' %}
+                <span class="badge badge-secondary" style="font-size: 1rem; padding: 0.5rem 1rem;">Completed</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="grid">
+    <div class="card">
+        <h3>📅 Schedule</h3>
+        <p><strong>Start:</strong> {{ hackathon.start_date }}</p>
+        <p><strong>End:</strong> {{ hackathon.end_date }}</p>
+        <p><strong>Registration Deadline:</strong> {{ hackathon.registration_deadline }}</p>
+    </div>
+    
+    <div class="card">
+        <h3>👥 Team Info</h3>
+        <p><strong>Min Team Size:</strong> {{ hackathon.min_team_size }}</p>
+        <p><strong>Max Team Size:</strong> {{ hackathon.max_team_size }}</p>
+        <p><strong>Format:</strong> {% if hackathon.is_online %}Online{% else %}In-Person{% endif %}</p>
+    </div>
+</div>
+
+<div class="card">
+    <h2>About This Hackathon</h2>
+    <p style="font-size: 1.1rem; line-height: 1.8; color: #4a5568;">{{ hackathon.description }}</p>
+</div>
+
+{% if session.user_id and hackathon.status == 'open_registration' %}
+    {% if not user_team %}
+    <div class="card" style="background: #edf2f7;">
+        <h3>Join This Hackathon</h3>
+        <p>Create a new team or wait for an invitation from an existing team.</p>
+        <a href="{{ url_for('create_team', hackathon_id=hackathon.id) }}" class="btn btn-primary">Create New Team</a>
+    </div>
+    {% else %}
+    <div class="card" style="background: #c6f6d5;">
+        <h3>✓ You're Registered!</h3>
+        <p>You're part of team: <strong>{{ user_team.team_name }}</strong></p>
+        <a href="{{ url_for('team_detail', id=user_team.id) }}" class="btn btn-success">Go to Team</a>
+    </div>
+    {% endif %}
+{% endif %}
+
+<div class="card">
+    <h2>Participating Teams ({{ teams|length }})</h2>
+    
+    {% if teams %}
+    <div class="grid">
+        {% for team in teams %}
+        <div class="card" style="background: #f7fafc; box-shadow: none;">
+            <h3>{{ team.team_name }}</h3>
+            <p style="color: #4a5568;">
+                <strong>Leader:</strong> {{ team.leader_name }}<br>
+                <strong>Members:</strong> {{ team.member_count }}
+            </p>
+            {% if team.description %}
+            <p style="color: #666; margin-top: 0.5rem; font-size: 0.95rem;">{{ team.description }}</p>
+            {% endif %}
+            <div style="margin-top: 1rem;">
+                {% if team.is_submitted %}
+                    <span class="badge badge-success">Project Submitted</span>
+                {% endif %}
+                {% if session.user_id and not user_team and hackathon.status == 'open_registration' %}
+                    <form method="POST" action="{{ url_for('request_join_team', team_id=team.id) }}" style="display: inline; margin-left: 0.5rem;">
+                        <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                            Request to Join
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="text-align: center; color: #4a5568; padding: 2rem;">
+        No teams have registered yet. Be the first!
+    </p>
+    {% endif %}
+</div>
+
+<a href="{{ url_for('view_rankings', hackathon_id=hackathon.id) }}" class="btn btn-primary">View Rankings →</a>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Evaluate {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Evaluate Project</h1>
+    <h2>{{ project.title }}</h2>
+    <p style="color: #4a5568;">Team: <strong>{{ project.team_name }}</strong></p>
+</div>
+
+<div class="card">
+    <h3>Project Details</h3>
+    <p style="font-size: 1.1rem; line-height: 1.8; color: #4a5568; margin: 1rem 0;">
+        {{ project.description }}
+    </p>
+    
+    <div style="margin: 1.5rem 0;">
+        {% if project.github_url %}
+        <a href="{{ project.github_url }}" target="_blank" class="btn btn-secondary" style="margin-right: 0.5rem;">
+            📦 View Code
+        </a>
+        {% endif %}
+        
+        {% if project.demo_url %}
+        <a href="{{ project.demo_url }}" target="_blank" class="btn btn-secondary">
+            🚀 View Demo
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <h3>Your Evaluation</h3>
+    
+    <form method="POST" action="{{ url_for('evaluate_project', project_id=project.id) }}">
+        <div class="grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="form-group">
+                <label for="innovation">Innovation (0-10) *</label>
+                <input type="number" id="innovation" name="innovation" class="form-control" 
+                       min="0" max="10" step="0.1" 
+                       value="{% if evaluation %}{{ evaluation.innovation_score }}{% endif %}" required>
+                <small style="color: #4a5568;">How innovative and creative is the solution?</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="technical">Technical Quality (0-10) *</label>
+                <input type="number" id="technical" name="technical" class="form-control" 
+                       min="0" max="10" step="0.1" 
+                       value="{% if evaluation %}{{ evaluation.technical_score }}{% endif %}" required>
+                <small style="color: #4a5568;">Code quality, architecture, best practices</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="presentation">Presentation (0-10) *</label>
+                <input type="number" id="presentation" name="presentation" class="form-control" 
+                       min="0" max="10" step="0.1" 
+                       value="{% if evaluation %}{{ evaluation.presentation_score }}{% endif %}" required>
+                <small style="color: #4a5568;">Demo quality, documentation, UI/UX</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="usefulness">Usefulness (0-10) *</label>
+                <input type="number" id="usefulness" name="usefulness" class="form-control" 
+                       min="0" max="10" step="0.1" 
+                       value="{% if evaluation %}{{ evaluation.usefulness_score }}{% endif %}" required>
+                <small style="color: #4a5568;">Real-world impact and practicality</small>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="comments">Overall Comments</label>
+            <textarea id="comments" name="comments" class="form-control">{% if evaluation %}{{ evaluation.comments }}{% endif %}</textarea>
+            <small style="color: #4a5568;">Provide constructive feedback for the team</small>
+        </div>
+        
+        <div class="alert alert-info">
+            <strong>Note:</strong> Overall score will be calculated automatically as the average of all four criteria.
+        </div>
+        
+        <div style="display: flex; gap: 1rem;">
+            <button type="submit" name="draft" class="btn btn-secondary" style="flex: 1;">Save as Draft</button>
+            <button type="submit" name="submit" class="btn btn-primary" style="flex: 1;">
+                Submit Evaluation
+            </button>
+        </div>
+    </form>
+</div>
+
+<a href="{{ url_for('dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Hackathon - {{ hackathon.title }}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 2rem auto;">
+    <h2>Edit Hackathon</h2>
+    <p style="color: #666; margin-bottom: 2rem;">Update hackathon details and status</p>
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="title">Hackathon Title *</label>
+            <input type="text" id="title" name="title" class="form-control" value="{{ hackathon.title }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description *</label>
+            <textarea id="description" name="description" class="form-control" required>{{ hackathon.description }}</textarea>
+        </div>
+
+        <div class="grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="form-group">
+                <label for="start_date">Start Date *</label>
+                <input type="datetime-local" id="start_date" name="start_date" class="form-control" value="{{ hackathon.start_date }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="end_date">End Date *</label>
+                <input type="datetime-local" id="end_date" name="end_date" class="form-control" value="{{ hackathon.end_date }}" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="registration_deadline">Registration Deadline *</label>
+            <input type="datetime-local" id="registration_deadline" name="registration_deadline" class="form-control" value="{{ hackathon.registration_deadline }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="status">Hackathon Status *</label>
+            <select id="status" name="status" class="form-control" required>
+                <option value="draft" {% if hackathon.status == 'draft' %}selected{% endif %}>Draft - Not visible to participants</option>
+                <option value="open_registration" {% if hackathon.status == 'open_registration' %}selected{% endif %}>Open Registration - Participants can join teams</option>
+                <option value="ongoing" {% if hackathon.status == 'ongoing' %}selected{% endif %}>Ongoing - Event in progress</option>
+                <option value="judging" {% if hackathon.status == 'judging' %}selected{% endif %}>Judging - Evaluation phase</option>
+                <option value="completed" {% if hackathon.status == 'completed' %}selected{% endif %}>Completed - Event finished</option>
+                <option value="cancelled" {% if hackathon.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+            <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
+                Change status to control hackathon visibility and team registration
+            </p>
+        </div>
+
+        <div class="grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="form-group">
+                <label for="max_team_size">Max Team Size</label>
+                <input type="number" id="max_team_size" name="max_team_size" class="form-control" value="{{ hackathon.max_team_size }}" min="1" max="10">
+            </div>
+
+            <div class="form-group">
+                <label for="is_online">
+                    <input type="checkbox" id="is_online" name="is_online" value="1" {% if hackathon.is_online %}checked{% endif %}>
+                    Online Event
+                </label>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                Save Changes
+            </button>
+            <a href="{{ url_for('hackathon_detail', id=hackathon.id) }}" class="btn btn-secondary" style="flex: 1; text-align: center;">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="card" style="max-width: 800px; margin: 2rem auto; background: #f7fafc;">
+    <h3 style="color: #2d3748; margin-bottom: 0.5rem;">Status Guide</h3>
+    <ul style="color: #4a5568; line-height: 1.8; padding-left: 1.5rem;">
+        <li><strong>Draft:</strong> Hackathon is hidden from participants. Use this while setting up.</li>
+        <li><strong>Open Registration:</strong> Participants can view and join teams.</li>
+        <li><strong>Ongoing:</strong> Event is in progress. New team registrations are closed.</li>
+        <li><strong>Judging:</strong> Projects are being evaluated by jury members.</li>
+        <li><strong>Completed:</strong> Event is finished. Rankings are final.</li>
+    </ul>
+</div>
+{% endblock %}

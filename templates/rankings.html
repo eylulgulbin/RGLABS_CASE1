@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Rankings - {{ hackathon.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>🏆 Hackathon Rankings</h1>
+    <h2>{{ hackathon.title }}</h2>
+</div>
+
+{% if rankings %}
+<div class="card">
+    <h2>Final Results</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 80px;">Rank</th>
+                <th>Team</th>
+                <th>Project</th>
+                <th>Final Score</th>
+                <th>Evaluations</th>
+                <th>Links</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rank in rankings %}
+            <tr {% if loop.index <= 3 %}style="background: linear-gradient(90deg, {% if loop.index == 1 %}#ffd700{% elif loop.index == 2 %}#c0c0c0{% else %}#cd7f32{% endif %}22, transparent);"{% endif %}>
+                <td style="text-align: center;">
+                    {% if loop.index == 1 %}
+                        <span style="font-size: 2rem;">🥇</span>
+                    {% elif loop.index == 2 %}
+                        <span style="font-size: 2rem;">🥈</span>
+                    {% elif loop.index == 3 %}
+                        <span style="font-size: 2rem;">🥉</span>
+                    {% else %}
+                        <strong style="font-size: 1.5rem;">{{ loop.index }}</strong>
+                    {% endif %}
+                </td>
+                <td><strong>{{ rank.team_name }}</strong></td>
+                <td>{{ rank.project_title }}</td>
+                <td>
+                    <strong style="font-size: 1.2rem; color: #667eea;">
+                        {{ "%.2f"|format(rank.final_score) }}
+                    </strong>
+                </td>
+                <td>{{ rank.evaluation_count }}</td>
+                <td>
+                    {% if rank.github_url %}
+                    <a href="{{ rank.github_url }}" target="_blank" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.9rem;">Code</a>
+                    {% endif %}
+                    {% if rank.demo_url %}
+                    <a href="{{ rank.demo_url }}" target="_blank" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.9rem;">Demo</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if rankings|length >= 3 %}
+<div class="grid">
+    <div class="stat-card" style="background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);">
+        <h3>🥇 1st Place</h3>
+        <p style="color: #744210; font-weight: 600;">{{ rankings[0].team_name }}</p>
+        <p style="color: #744210;">{{ "%.2f"|format(rankings[0].final_score) }} points</p>
+    </div>
+    
+    <div class="stat-card" style="background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);">
+        <h3>🥈 2nd Place</h3>
+        <p style="color: #2d3748; font-weight: 600;">{{ rankings[1].team_name }}</p>
+        <p style="color: #2d3748;">{{ "%.2f"|format(rankings[1].final_score) }} points</p>
+    </div>
+    
+    <div class="stat-card" style="background: linear-gradient(135deg, #cd7f32 0%, #dda15e 100%);">
+        <h3>🥉 3rd Place</h3>
+        <p style="color: #22543d; font-weight: 600;">{{ rankings[2].team_name }}</p>
+        <p style="color: #22543d;">{{ "%.2f"|format(rankings[2].final_score) }} points</p>
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+<div class="card">
+    <p style="text-align: center; color: #4a5568; padding: 2rem;">
+        Rankings will be available once all projects have been evaluated by the jury.
+    </p>
+</div>
+{% endif %}
+
+<a href="{{ url_for('hackathon_detail', id=hackathon.id) }}" class="btn btn-secondary">← Back to Hackathon</a>
+{% endblock %}

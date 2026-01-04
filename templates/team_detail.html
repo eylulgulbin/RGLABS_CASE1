@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}{{ team.team_name }} - Hackathon Platform{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: start;">
+        <div>
+            <h1>{{ team.team_name }}</h1>
+            <p style="color: #4a5568;"><strong>Hackathon:</strong> {{ team.hackathon_title }}</p>
+            <p style="color: #4a5568;"><strong>Team Leader:</strong> {{ team.leader_name }}</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            {% if is_leader %}
+                <a href="{{ url_for('edit_team', team_id=team.id) }}" class="btn btn-secondary">
+                    ✏️ Edit Team
+                </a>
+                <a href="{{ url_for('view_team_requests', team_id=team.id) }}" class="btn btn-secondary">
+                    📋 Join Requests
+                </a>
+                <a href="{{ url_for('submit_project', team_id=team.id) }}" class="btn btn-primary">
+                    {% if project %}Edit Project{% else %}Submit Project{% endif %}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if team.description %}
+<div class="card">
+    <h3>About Our Team</h3>
+    <p style="font-size: 1.1rem; color: #4a5568;">{{ team.description }}</p>
+</div>
+{% endif %}
+
+<div class="card">
+    <h2>Team Members ({{ members|length }})</h2>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>GitHub</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in members %}
+            <tr>
+                <td><strong>{{ member.full_name }}</strong></td>
+                <td>{{ member.email }}</td>
+                <td>
+                    {% if member.github_username %}
+                        <a href="https://github.com/{{ member.github_username }}" target="_blank" style="color: #667eea;">
+                            @{{ member.github_username }}
+                        </a>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% if member.role == 'leader' %}
+                        <span class="badge badge-warning">Leader</span>
+                    {% else %}
+                        <span class="badge badge-info">{{ member.role|title }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if project %}
+<div class="card">
+    <h2>Project Submission</h2>
+    
+    {% if project.is_submitted %}
+        <div class="alert alert-success">
+            <strong>✓ Project Submitted!</strong> Your project has been successfully submitted for evaluation.
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            <strong>Draft:</strong> Your project is saved as a draft. Submit it before the deadline!
+        </div>
+    {% endif %}
+    
+    <h3>{{ project.title }}</h3>
+    <p style="font-size: 1.1rem; color: #4a5568; margin: 1rem 0;">{{ project.description }}</p>
+    
+    <div style="margin: 1.5rem 0;">
+        {% if project.github_url %}
+        <a href="{{ project.github_url }}" target="_blank" class="btn btn-secondary" style="margin-right: 0.5rem;">
+            📦 View Code
+        </a>
+        {% endif %}
+        
+        {% if project.demo_url %}
+        <a href="{{ project.demo_url }}" target="_blank" class="btn btn-secondary">
+            🚀 View Demo
+        </a>
+        {% endif %}
+    </div>
+    
+    {% if is_leader and not project.is_submitted %}
+    <a href="{{ url_for('submit_project', team_id=team.id) }}" class="btn btn-primary">Edit Project</a>
+    {% endif %}
+</div>
+{% elif is_leader %}
+<div class="card" style="background: #feebc8;">
+    <h3>⚠️ No Project Submitted</h3>
+    <p>You haven't submitted a project yet. Click below to get started!</p>
+    <a href="{{ url_for('submit_project', team_id=team.id) }}" class="btn btn-primary">Submit Project</a>
+</div>
+{% endif %}
+
+<a href="{{ url_for('hackathon_detail', id=team.hackathon_id) }}" class="btn btn-secondary">← Back to Hackathon</a>
+{% endblock %}

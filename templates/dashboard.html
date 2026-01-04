@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if session.user_role == 'organizer' %}
+        Hackathons
+    {% elif session.user_role == 'jury' %}
+        Assignments
+    {% else %}
+        Teams
+    {% endif %}
+    - Hackathon Platform
+{% endblock %}
+
+{% block content %}
+<h1>Welcome, {{ session.user_name }}!</h1>
+<p style="color: white; font-size: 1.1rem; margin-bottom: 2rem;">Role: <strong>{{ session.user_role|title }}</strong></p>
+
+{% if session.user_role == 'organizer' %}
+    <div style="margin-bottom: 2rem;">
+        <a href="{{ url_for('create_hackathon') }}" class="btn btn-primary">+ Create New Hackathon</a>
+    </div>
+
+    <div class="card">
+        <h2>Hackathons</h2>
+        
+        {% if data.hackathons %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Start Date</th>
+                    <th>Teams</th>
+                    <th>Submissions</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hackathon in data.hackathons %}
+                <tr>
+                    <td><strong>{{ hackathon.title }}</strong></td>
+                    <td>
+                        {% if hackathon.status == 'draft' %}
+                            <span class="badge badge-secondary">Draft</span>
+                        {% elif hackathon.status == 'open_registration' %}
+                            <span class="badge badge-success">Open</span>
+                        {% elif hackathon.status == 'ongoing' %}
+                            <span class="badge badge-info">Ongoing</span>
+                        {% elif hackathon.status == 'judging' %}
+                            <span class="badge badge-warning">Judging</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ hackathon.start_date }}</td>
+                    <td>{{ hackathon.team_count }}</td>
+                    <td>{{ hackathon.submitted_count }}</td>
+                    <td>
+                        <a href="{{ url_for('hackathon_detail', id=hackathon.id) }}" class="btn btn-secondary" style="padding: 0.4rem 0.8rem;">View</a>
+                        <a href="{{ url_for('view_rankings', hackathon_id=hackathon.id) }}" class="btn btn-primary" style="padding: 0.4rem 0.8rem;">Rankings</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align: center; color: #4a5568; padding: 2rem;">
+            You haven't created any hackathons yet. <a href="{{ url_for('create_hackathon') }}" style="color: #667eea;">Create one now!</a>
+        </p>
+        {% endif %}
+    </div>
+
+{% elif session.user_role == 'jury' %}
+    <div class="card">
+        <h2>Assignments</h2>
+        
+        {% if data.assignments %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Hackathon</th>
+                    <th>Status</th>
+                    <th>Total Projects</th>
+                    <th>Evaluated</th>
+                    <th>Progress</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in data.assignments %}
+                <tr>
+                    <td><strong>{{ assignment.title }}</strong></td>
+                    <td>
+                        {% if assignment.status == 'judging' %}
+                            <span class="badge badge-warning">Judging</span>
+                        {% else %}
+                            <span class="badge badge-info">{{ assignment.status|title }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ assignment.total_projects }}</td>
+                    <td>{{ assignment.evaluated_count }}</td>
+                    <td>
+                        {% if assignment.total_projects > 0 %}
+                            {{ (assignment.evaluated_count / assignment.total_projects * 100)|round|int }}%
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('evaluate_hackathon', hackathon_id=assignment.id) }}" class="btn btn-primary" style="padding: 0.4rem 0.8rem;">Evaluate</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="text-align: center; color: #4a5568; padding: 2rem;">
+            You haven't been assigned to any hackathons yet.
+        </p>
+        {% endif %}
+    </div>
+
+{% else %}  {# participant #}
+    <!-- Pending Team Requests Notification -->
+    {% if data.pending_team_requests > 0 %}
+    <div class="card" style="background: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 2rem;">
+        <h3 style="color: #856404; margin-bottom: 0.5rem;">⚠️ Pending Join Requests</h3>
+        <p style="color: #856404; margin-bottom: 1rem;">
+            You have {{ data.pending_team_requests }} pending join request{% if data.pending_team_requests != 1 %}s{% endif %} for your teams.
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- Join Requests Status -->
+    {% if data.join_requests %}
+    <div class="card" style="margin-bottom: 2rem;">
+        <h2>Your Join Requests</h2>
+        <div style="display: grid; gap: 1rem;">
+            {% for request in data.join_requests %}
+            <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>{{ request.team_name }}</strong>
+                    <p style="color: #666; font-size: 0.9rem; margin: 0.3rem 0 0 0;">{{ request.hackathon_title }}</p>
+                </div>
+                <div>
+                    {% if request.status == 'pending' %}
+                        <span class="badge badge-warning">Pending</span>
+                    {% elif request.status == 'rejected' %}
+                        <span class="badge badge-danger">Rejected</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <h2>Teams</h2>
+
+        {% if data.teams %}
+        <div class="grid">
+            {% for team in data.teams %}
+            <div class="card" style="background: #f7fafc; box-shadow: none;">
+                <h3>{{ team.team_name }}</h3>
+                <p style="color: #4a5568; margin: 0.5rem 0;">
+                    <strong>Hackathon:</strong> {{ team.hackathon_title }}
+                </p>
+                <p style="color: #4a5568; margin: 0.5rem 0;">
+                    <strong>Members:</strong> {{ team.member_count }}
+                </p>
+                
+                <div style="margin: 1rem 0;">
+                    <span class="badge badge-info">{{ team.hackathon_status|title }}</span>
+                    {% if team.is_submitted %}
+                        <span class="badge badge-success">Project Submitted</span>
+                    {% endif %}
+                </div>
+                
+                <a href="{{ url_for('team_detail', id=team.id) }}" class="btn btn-primary">View Team →</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="text-align: center; color: #4a5568; padding: 2rem;">
+            You haven't joined any teams yet. <a href="{{ url_for('index') }}" style="color: #667eea;">Browse hackathons</a> to get started!
+        </p>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

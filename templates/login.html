@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Hackathon Platform{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 4rem auto;">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Login to Your Account</h2>
+    
+    <form method="POST" action="{{ url_for('login') }}">
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" class="form-control" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">Login</button>
+    </form>
+    
+    <p style="text-align: center; color: #4a5568;">
+        Don't have an account? <a href="{{ url_for('register') }}" style="color: #667eea; font-weight: 600;">Sign Up</a>
+    </p>
+    
+    <div class="alert alert-info" style="margin-top: 2rem;">
+        <strong>Demo Accounts:</strong><br>
+        <strong>Organizer:</strong> organizer@hack.com<br>
+        <strong>Jury:</strong> jury1@hack.com<br>
+        <strong>Participant:</strong> participant1@hack.com<br>
+        <strong>Password (all):</strong> password123
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Hackathon Platform{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 4rem auto;">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Create Your Account</h2>
+    
+    <form method="POST" action="{{ url_for('register') }}">
+        <div class="form-group">
+            <label for="full_name">Full Name</label>
+            <input type="text" id="full_name" name="full_name" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" class="form-control" required minlength="6">
+        </div>
+        
+        <div class="form-group">
+            <label for="role">I want to...</label>
+            <select id="role" name="role" class="form-control">
+                <option value="participant">Participate in hackathons</option>
+                <option value="organizer">Organize hackathons</option>
+                <option value="jury">Be a jury member</option>
+            </select>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">Create Account</button>
+    </form>
+    
+    <p style="text-align: center; color: #4a5568;">
+        Already have an account? <a href="{{ url_for('login') }}" style="color: #667eea; font-weight: 600;">Login</a>
+    </p>
+</div>
+{% endblock %}
