@@ -1,69 +1,28 @@
-# 🚀 Hackathon Platform - VSCode Ready
+Hackathon Platform 
 
 A complete hackathon management platform built with Python Flask.
 
-## 📋 Prerequisites
+Prerequisites
 
 - **Python 3.7+** installed on your system
 - **VSCode** (Visual Studio Code)
 - **Git** (optional, for version control)
 
-## 🚀 Quick Start (3 Steps!)
 
-### Step 1: Open in VSCode
+Run the Application
 
-1. Open VSCode
-2. File → Open Folder
-3. Select this `hackathon-platform-vscode` folder
-
-### Step 2: Set Up Python Environment
-
-**Option A: Using VSCode Terminal** (Recommended)
-
-```bash
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# On Windows:
-venv\Scripts\activate
-# On Mac/Linux:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-**Option B: VSCode will prompt you**
-- VSCode may automatically detect `requirements.txt`
-- Click "Create Environment" if prompted
-- Select "Venv" → Choose Python interpreter
-- VSCode will install dependencies automatically
-
-### Step 3: Run the Application
-
-**Option A: Using Terminal**
+Using Terminal
 ```bash
 python app.py
 ```
 
-**Option B: Using VSCode Debugger**
-1. Press `F5` or click "Run and Debug" in sidebar
-2. Select "Python: Flask" configuration
-3. Application starts with debugging enabled
-
-**Option C: Using VSCode Run Button**
-1. Open `app.py`
-2. Click the ▶️ Run button in top right
-3. Application starts
-
-### Step 4: Open in Browser
+Step 4: Open in Browser
 
 Navigate to: **http://localhost:5000**
 
-You should see the Hackathon Platform homepage! 🎉
+You should see the Hackathon Platform homepage
 
-## 🔑 Demo Accounts
+Demo Accounts
 
 Login with these pre-created accounts:
 
