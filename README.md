@@ -16,7 +16,7 @@ Using Terminal
 python app.py
 ```
 
-Step 4: Open in Browser
+Open in Browser
 
 Navigate to: **http://localhost:5000**
 
