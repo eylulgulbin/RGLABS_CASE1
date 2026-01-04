@@ -44,7 +44,7 @@ Email: participant1@hack.com
 Password: password123
 ```
 
-## 📁 Project Structure
+Project Structure
 
 ```
 hackathon-platform-vscode/
